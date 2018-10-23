@@ -12,15 +12,30 @@
         <button class="button is-medium is-primary" @click="alert">
           Launch alert (default)
         </button>
-        
+        <conversation-item v-for="item in content" v-bind:item="item"></conversation-item>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import ConversationItem from "./Editor/ConversationItem"
+
+  var electron = require('electron');
+  var remote = electron.remote;
+  var fs = remote.require('fs');
+  var json = JSON.parse(fs.readFileSync('/Users/wararyo/Git/EclairConversationEditor/test.json', 'utf8'));
+  console.log(json);
+
   export default {
     name: 'editor',
+    components: {
+      ConversationItem
+    },
+    data: function(){ return {
+        content: json["content"]
+      }
+    },
     methods: {
       alert() {
           this.$dialog.alert('Everything looks fine!')
