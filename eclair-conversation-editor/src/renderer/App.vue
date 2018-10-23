@@ -10,6 +10,5 @@
   }
 </script>
 
-<style>
-  /* CSS */
+<style lang="scss">
 </style>

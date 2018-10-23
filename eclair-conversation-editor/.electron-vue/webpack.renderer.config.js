@@ -67,9 +67,9 @@ let rendererConfig = {
           options: {
             extractCSS: process.env.NODE_ENV === 'production',
             loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
+              'scss': process.env.NODE_ENV === 'production' ? 
+                      'vue-style-loader!css-loader!sass-loader' : 
+                      'vue-style-loader!css-loader?sourceMap!sass-loader'
             }
           }
         }
@@ -134,9 +134,10 @@ let rendererConfig = {
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'styles': path.resolve(__dirname, '../src/renderer/scss')
     },
-    extensions: ['.js', '.vue', '.json', '.css', '.node']
+    extensions: ['.js', '.vue', '.json', '.css', '.scss', '.node']
   },
   target: 'electron-renderer'
 }

@@ -15,7 +15,7 @@
           <p>
             electron-vue comes packed with detailed documentation that covers everything from
             internal configurations, using the project structure, building your application,
-            and so much more.
+            and so much more.ahogeahoge
           </p>
           <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
         </div>
@@ -32,7 +32,7 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
 
-  export default {
+  export default{
     name: 'landing-page',
     components: { SystemInformation },
     methods: {
