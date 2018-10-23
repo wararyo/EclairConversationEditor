@@ -1,0 +1,18 @@
+{
+  "description": "New Conversationだね",
+  "character-left": [
+    1
+  ],
+  "character-right": [],
+  "type": 0,
+  "content": [
+    {
+      "character": [
+        1
+      ],
+      "content": "あほげかな",
+      "duration": 3.03,
+      "name-overwrite": ""
+    }
+  ]
+}

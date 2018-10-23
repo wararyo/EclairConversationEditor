@@ -1,23 +1,34 @@
 {
+  "description": "テスト会話a",
+  "character-left": [
+    1
+  ],
+  "character-right": [],
+  "type": 0,
   "content": [
     {
-      "content": "hoge\n"
+      "character": [
+        1
+      ],
+      "content": "こんにちは",
+      "duration": 4.4,
+      "name-overwrite": ""
     },
     {
-      "content": "huga\n"
+      "character": [
+        1
+      ],
+      "content": "こんばんは",
+      "duration": 4,
+      "name-overwrite": ""
     },
     {
-      "content": "foobar\n"
+      "character": [
+        1
+      ],
+      "content": "また明日",
+      "duration": 4.5,
+      "name-overwrite": ""
     }
-  ],
-  "boolean": true,
-  "color": "#82b92c",
-  "null": null,
-  "number": 123,
-  "object": {
-    "a": "b",
-    "c": "d",
-    "e": "f"
-  },
-  "string": "Hello World"
+  ]
 }

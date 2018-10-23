@@ -1,7 +1,15 @@
 <template>
 	<div class="conversation-item">
-		<p>hogehoge</p>
-		<p>{{ item.content }}</p>
+		<b-field>
+      <b-input v-model="item.content" placeholder="セリフ"></b-input>
+    </b-field>
+    <b-field>
+      <b-input v-model.number="item.duration" placeholder="-1で無限" type="number" step="0.1" min="-1">
+      </b-input>
+      <p class="control">
+        <span class="button is-static">秒</span>
+      </p>
+    </b-field>
 	</div>
 </template>
 
@@ -22,5 +30,9 @@
 </script>
 
 <style lang="scss">
-
+  @import "~styles/color";
+	.conversation-item {
+		padding: 16px;
+    border-bottom: 1px solid $light-gray;
+	}
 </style>

@@ -1,18 +1,24 @@
 <template>
   <div class="wrapper">
     <div class="sidebar">
-      <p>ECE</p>
+      <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
+      <button class="button is-medium is-primary" @click="test">
+        Load Test
+      </button>
     </div>
     <div class="main">
       <header>
-        <h2>Eclair Conversation Editor</h2>
-        <button>Save</button>
+        <h2>{{name}}</h2>
+        <button @click="save">Save</button>
       </header>
       <div class="content">
-        <button class="button is-medium is-primary" @click="alert">
-          Launch alert (default)
-        </button>
-        <conversation-item v-for="item in content" v-bind:item="item"></conversation-item>
+        <div class="content-meta">
+          <h3>メタデータ</h3>
+          <b-field label="概要">
+            <b-input v-model="conversation['description']"></b-input>
+          </b-field>
+        </div>
+        <conversation-item v-for="item in conversation['content']" v-bind:item="item"></conversation-item>
       </div>
     </div>
   </div>
@@ -20,12 +26,11 @@
 
 <script>
   import ConversationItem from "./Editor/ConversationItem"
+  var env = require('../variables');
 
   var electron = require('electron');
   var remote = electron.remote;
   var fs = remote.require('fs');
-  var json = JSON.parse(fs.readFileSync('/Users/wararyo/Git/EclairConversationEditor/test.json', 'utf8'));
-  console.log(json);
 
   export default {
     name: 'editor',
@@ -33,12 +38,26 @@
       ConversationItem
     },
     data: function(){ return {
-        content: json["content"]
-      }
+        conversation: env.default_conversation,
+        path: ""
+      };
     },
     methods: {
-      alert() {
-          this.$dialog.alert('Everything looks fine!')
+      test() {
+          this.load('/Users/wararyo/Git/EclairConversationEditor/test.json');
+      },
+      load(path) {
+        this.path = path;
+        this.conversation = JSON.parse(fs.readFileSync(path, 'utf8'));
+      },
+      save() {
+        var str = JSON.stringify(this.conversation,null,2);
+        fs.writeFileSync('/Users/wararyo/Git/EclairConversationEditor/test.json',str);
+      }
+    },
+    computed: {
+      name: function() {
+        return this.path == "" ? "Untitled" : this.path.match(".+/(.+?)\.[a-z]+([\?#;].*)?$")[1];
       }
     }
   }
@@ -54,7 +73,12 @@
   .sidebar {
     width: 200px;
     height: 100vh;
-    background-color: $eclair-orange;
+    background-color: $gray;
+  }
+  .sidebar-icon {
+    height: 24px;
+    margin: 12px;
+    text-align: center;
   }
   .main {
     flex: 1;
@@ -80,5 +104,9 @@
     max-width: 800px;
     margin: 0 auto;
     overflow:scroll;
+    .content-meta {
+      padding: 16px;
+      border-bottom: 1px solid $light-gray;
+    }
   }
 </style>
