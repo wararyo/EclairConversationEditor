@@ -1,7 +1,7 @@
 <template>
 	<div class="conversation-item">
 		<b-field>
-      <b-input v-model="item.content" placeholder="セリフ"></b-input>
+      <b-input type="textarea" v-model="item.content" placeholder="セリフ" rows="3"></b-input>
     </b-field>
     <b-field>
       <b-input v-model.number="item.duration" placeholder="-1で無限" type="number" step="0.1" min="-1">
