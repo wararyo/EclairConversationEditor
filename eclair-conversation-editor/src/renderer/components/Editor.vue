@@ -83,6 +83,9 @@
   .main {
     flex: 1;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 	header {
     height: 48px;
@@ -101,7 +104,9 @@
     }
   }
   .content {
+    width: 100%;
     max-width: 800px;
+    flex: 1;
     margin: 0 auto;
     overflow:scroll;
     .content-meta {
