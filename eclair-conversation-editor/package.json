@@ -17,7 +17,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "eclair-conversation-editor",
+    "productName": "Eclair Conversation Editor",
     "appId": "com.wararyo.eclairconveditor",
     "directories": {
       "output": "build"

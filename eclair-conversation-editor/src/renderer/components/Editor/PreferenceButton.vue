@@ -18,7 +18,7 @@
     const ModalForm = {
         template: `
             <form action="">
-                <div class="modal-card" style="width: auto">
+                <div class="modal-card">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Preference</p>
                     </header>
