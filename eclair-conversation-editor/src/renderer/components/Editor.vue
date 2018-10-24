@@ -1,7 +1,10 @@
 <template>
   <div class="wrapper">
     <div class="sidebar">
-      <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
+      <div class="sidebar-header">
+        <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
+        <preference-button v-on:close="applyPreference"></preference-button>
+      </div>
       <div class="file-brower-container">
         <file-browser-tree 
           id="file-tree"
@@ -48,6 +51,7 @@
   import draggable from 'vuedraggable'
   import CharacterInput from "./Editor/CharacterInput"
   import GetFileList from "../utils/GetFileList"
+  import PreferenceButton from "./Editor/PreferenceButton"
 
   const util = require('util');
 
@@ -61,11 +65,15 @@
 
   const path = require('path');
 
+  const Store = require('electron-store');
+  const store = new Store();
+
   export default {
     name: 'editor',
     components: {
       ConversationItem,
       CharacterInput,
+      PreferenceButton,
       draggable
     },
     data: function(){ return {
@@ -106,6 +114,7 @@
       },
       applyFiletree(directory) {
         parent = path.resolve(directory, '../');
+        this.$refs.filetree.nodes = [];
         GetFileList.readTopDir(directory,
             (err) => {throw err},
             (itemPath) => {
@@ -113,6 +122,16 @@
                 this.$refs.filetree.addPathToTree(itemPath.replace(parent,''), '', false);
             }
           );
+      },
+      applyPreference() {
+        if(!store.get('projectPath')) {
+          //設定を開く
+          this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/';
+        }
+        else {
+          this.projectPath = store.get('projectPath');
+        }
+        this.applyFiletree(this.projectPath);
       }
     },
     computed: {
@@ -129,7 +148,15 @@
       }
     },
     mounted: function() {
-      this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
+      //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
+      if(!store.get('projectPath')) {
+        //設定を開く
+        console.log("hoge");
+        this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/';
+      }
+      else {
+        this.projectPath = store.get('projectPath');
+      }
       this.applyFiletree(this.projectPath);
     }
   }
@@ -149,10 +176,15 @@
     flex-direction: column;
     background-color: $gray;
   }
+  .sidebar-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+  }
   .sidebar-icon {
     height: 24px;
     margin: 12px;
-    text-align: center;
+    flex: 1;
   }
   .file-brower-container {
     flex:1;

@@ -2,3 +2,8 @@
 	border: none !important;
 	background: none !important;
 }
+
+span#file-tree {
+	display: block !important;
+	width: 480px !important;
+}
