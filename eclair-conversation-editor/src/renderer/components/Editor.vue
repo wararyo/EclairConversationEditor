@@ -93,7 +93,9 @@
       },
       save() {
         var str = JSON.stringify(this.conversation,null,2);
-        if(this.path != "") fs.writeFileSync(this.path,str);
+        if(this.path == "") this.path = this.projectPath + "Untitled.eclairconversation";
+        fs.writeFileSync(this.path,str);
+        this.applyFiletree(this.projectPath);
       },
       add(item) {
         var newItem = Object.assign({},item);
