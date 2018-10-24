@@ -2,17 +2,18 @@
   <div class="wrapper">
     <div class="sidebar">
       <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
-      <file-browser-tree 
-        id="file-tree"
-        ref="filetree"
-        @nodeClick="nodeClick">
+      <div class="file-brower-container">
+        <file-browser-tree 
+          id="file-tree"
+          ref="filetree"
+          @nodeClick="nodeClick">
 
-        <template slot="context-menu">
-            <div @click="doDashboard">Dashboard</div>
-            <div @click="doCustomers">Customers</div>
-        </template>
+          <template slot="context-menu">
+              <div @click="revealInFinder">Reveal in {{isDarwin ? 'Finder':'Explorer'}}</div>
+          </template>
 
-      </file-browser-tree>
+        </file-browser-tree>
+      </div>
     </div>
     <div class="main">
       <header>
@@ -54,6 +55,7 @@
   var uuid = require('uuid');
 
   var electron = require('electron');
+  const {shell} = require('electron')
   var remote = electron.remote;
   var fs = remote.require('fs');
 
@@ -69,7 +71,8 @@
     data: function(){ return {
         conversation: env.default_conversation,
         projectPath: "",
-        path: ""
+        path: "",
+        isDarwin: process.platform === 'darwin'
       };
     },
     methods: {
@@ -93,16 +96,13 @@
         this.content.splice(this.content.indexOf(item),1);
       },
       nodeClick(event, node) {
-        this.save();
-        this.load(path.resolve(this.projectPath, '../') + node.data.pathname);
+        if(node.isLeaf) {
+          this.save();
+          this.load(path.resolve(this.projectPath, '../') + node.data.pathname);
+        }
       },
-      doCustomers() {
-          console.log(`doCustomers`);
-          this.$refs.filetree.contextMenuIsVisible = false;
-      },
-      doDashboard() {
-          console.log(`doDashboard`);
-          this.$refs.filetree.contextMenuIsVisible = false;
+      revealInFinder(a,b) {
+        shell.showItemInFolder(this.projectPath);
       },
       applyFiletree(directory) {
         parent = path.resolve(directory, '../');
@@ -153,6 +153,10 @@
     height: 24px;
     margin: 12px;
     text-align: center;
+  }
+  .file-brower-container {
+    flex:1;
+    overflow: scroll;
   }
   .sl-vue-tree.sl-vue-tree-root {
     border: none !important;
