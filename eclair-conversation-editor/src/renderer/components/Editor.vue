@@ -3,7 +3,7 @@
     <div class="sidebar">
       <div class="sidebar-header">
         <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
-        <preference-button v-on:close="applyPreference"></preference-button>
+        <preference-button ref="preferenceButton" v-on:close="applyPreference"></preference-button>
       </div>
       <div class="file-brower-container">
         <file-browser-tree 
@@ -126,7 +126,7 @@
       applyPreference() {
         if(!store.get('projectPath')) {
           //設定を開く
-          this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/';
+          this.$refs.preferenceButton.isComponentModalActive = true;
         }
         else {
           this.projectPath = store.get('projectPath');
@@ -151,8 +151,8 @@
       //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
       if(!store.get('projectPath')) {
         //設定を開く
-        console.log("hoge");
-        this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/';
+        console.log(this.$refs.preferenceButton);
+        this.$refs.preferenceButton.isComponentModalActive = true;
       }
       else {
         this.projectPath = store.get('projectPath');
