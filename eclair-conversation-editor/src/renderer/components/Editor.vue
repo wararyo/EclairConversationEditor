@@ -18,7 +18,11 @@
             <b-input v-model="conversation['description']"></b-input>
           </b-field>
         </div>
-        <conversation-item v-for="item in conversation['content']" v-bind:item="item"></conversation-item>
+        <draggable v-model="content" :options="{animation:160,handle:'.conversation-item'}" @start="drag=true" @end="drag=false">
+          <div v-for="item in content" :key="item.id" >
+            <conversation-item :removable="content.length != 1" :item="item" v-on:add="add($event)" v-on:remove="remove($event)"></conversation-item>
+          </div>
+        </draggable>
       </div>
     </div>
   </div>
@@ -26,7 +30,11 @@
 
 <script>
   import ConversationItem from "./Editor/ConversationItem"
+  import draggable from 'vuedraggable'
+
   var env = require('../variables');
+  var uuid = require('uuid');
+  console.log(uuid.v1());
 
   var electron = require('electron');
   var remote = electron.remote;
@@ -35,7 +43,8 @@
   export default {
     name: 'editor',
     components: {
-      ConversationItem
+      ConversationItem,
+      draggable
     },
     data: function(){ return {
         conversation: env.default_conversation,
@@ -53,11 +62,27 @@
       save() {
         var str = JSON.stringify(this.conversation,null,2);
         fs.writeFileSync('/Users/wararyo/Git/EclairConversationEditor/test.json',str);
+      },
+      add(item) {
+        var newItem = Object.assign({},item);
+        newItem.id = uuid.v1();
+        this.content.splice(this.content.indexOf(item)+1,0,newItem);
+      },
+      remove(item){
+        this.content.splice(this.content.indexOf(item),1);
       }
     },
     computed: {
       name: function() {
         return this.path == "" ? "Untitled" : this.path.match(".+/(.+?)\.[a-z]+([\?#;].*)?$")[1];
+      },
+      content: { 
+        get: function() {
+          return this.conversation['content']
+        },
+        set: function(value) {
+          this.conversation['content'] = value;
+        }
       }
     }
   }
@@ -112,6 +137,9 @@
     .content-meta {
       padding: 16px;
       border-bottom: 1px solid $light-gray;
+    }
+    > ul {
+      margin: 0 0 16px 0;
     }
   }
 </style>

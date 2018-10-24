@@ -7,26 +7,23 @@
   "type": 0,
   "content": [
     {
+      "id": "d5daf910-d760-11e8-a59f-0b5bd23df50a",
       "character": [
-        1
+        0,
+        2
       ],
-      "content": "こんにちは\nさようなら\nあいうえお",
-      "duration": 4.4,
+      "content": "複数キャラ",
+      "duration": 4.5,
       "name-overwrite": ""
     },
     {
+      "id": "8acff180-d771-11e8-9257-7521db4ccc2d",
       "character": [
+        0,
+        2,
         1
       ],
-      "content": "こんばんは",
-      "duration": 4,
-      "name-overwrite": ""
-    },
-    {
-      "character": [
-        1
-      ],
-      "content": "また明日",
+      "content": "複数キャラ",
       "duration": 4.5,
       "name-overwrite": ""
     }

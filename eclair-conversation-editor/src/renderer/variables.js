@@ -12,6 +12,7 @@ module.exports = {
       "type": 0,
       "content": [
         {
+          "id": 0,
           "character": [
             1
           ],
