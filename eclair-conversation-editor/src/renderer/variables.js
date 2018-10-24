@@ -6,7 +6,7 @@ module.exports = {
     {
       "description": "New Conversation",
       "character-left": [
-        1
+        0
       ],
       "character-right": [],
       "type": 0,
@@ -14,7 +14,7 @@ module.exports = {
         {
           "id": 0,
           "character": [
-            1
+            0
           ],
           "content": "Initial Content",
           "duration": 3,

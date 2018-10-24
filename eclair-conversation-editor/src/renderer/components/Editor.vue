@@ -2,9 +2,17 @@
   <div class="wrapper">
     <div class="sidebar">
       <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
-      <button class="button is-medium is-primary" @click="test">
-        Load Test
-      </button>
+      <file-browser-tree 
+        id="file-tree"
+        ref="filetree"
+        @nodeClick="nodeClick">
+
+        <template slot="context-menu">
+            <div @click="doDashboard">Dashboard</div>
+            <div @click="doCustomers">Customers</div>
+        </template>
+
+      </file-browser-tree>
     </div>
     <div class="main">
       <header>
@@ -16,6 +24,12 @@
           <h3>メタデータ</h3>
           <b-field label="概要">
             <b-input v-model="conversation['description']"></b-input>
+          </b-field>
+          <b-field label="キャラクター">
+            <b-field grouped>
+              <character-input v-model="conversation['character-left']"></character-input>
+              <character-input v-model="conversation['character-right']"></character-input>
+            </b-field>
           </b-field>
         </div>
         <draggable v-model="content" :options="{animation:160,handle:'.conversation-item'}" @start="drag=true" @end="drag=false">
@@ -31,29 +45,36 @@
 <script>
   import ConversationItem from "./Editor/ConversationItem"
   import draggable from 'vuedraggable'
+  import CharacterInput from "./Editor/CharacterInput"
+  import GetFileList from "../utils/GetFileList"
+
+  const util = require('util');
 
   var env = require('../variables');
   var uuid = require('uuid');
-  console.log(uuid.v1());
 
   var electron = require('electron');
   var remote = electron.remote;
   var fs = remote.require('fs');
 
+  const path = require('path');
+
   export default {
     name: 'editor',
     components: {
       ConversationItem,
+      CharacterInput,
       draggable
     },
     data: function(){ return {
         conversation: env.default_conversation,
+        projectPath: "",
         path: ""
       };
     },
     methods: {
       test() {
-          this.load('/Users/wararyo/Git/EclairConversationEditor/test.json');
+        this.load('/Users/wararyo/Git/EclairConversationEditor/test.json');
       },
       load(path) {
         this.path = path;
@@ -61,7 +82,7 @@
       },
       save() {
         var str = JSON.stringify(this.conversation,null,2);
-        fs.writeFileSync('/Users/wararyo/Git/EclairConversationEditor/test.json',str);
+        if(this.path != "") fs.writeFileSync(this.path,str);
       },
       add(item) {
         var newItem = Object.assign({},item);
@@ -70,6 +91,28 @@
       },
       remove(item){
         this.content.splice(this.content.indexOf(item),1);
+      },
+      nodeClick(event, node) {
+        this.save();
+        this.load(path.resolve(this.projectPath, '../') + node.data.pathname);
+      },
+      doCustomers() {
+          console.log(`doCustomers`);
+          this.$refs.filetree.contextMenuIsVisible = false;
+      },
+      doDashboard() {
+          console.log(`doDashboard`);
+          this.$refs.filetree.contextMenuIsVisible = false;
+      },
+      applyFiletree(directory) {
+        parent = path.resolve(directory, '../');
+        GetFileList.readTopDir(directory,
+            (err) => {throw err},
+            (itemPath) => {
+              if(itemPath.endsWith('.eclairconversation')||itemPath.endsWith('.json')) 
+                this.$refs.filetree.addPathToTree(itemPath.replace(parent,''), '', false);
+            }
+          );
       }
     },
     computed: {
@@ -84,6 +127,10 @@
           this.conversation['content'] = value;
         }
       }
+    },
+    mounted: function() {
+      this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
+      this.applyFiletree(this.projectPath);
     }
   }
 </script>
@@ -96,14 +143,20 @@
     width: 100vw;
   }
   .sidebar {
-    width: 200px;
+    width: 240px;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
     background-color: $gray;
   }
   .sidebar-icon {
     height: 24px;
     margin: 12px;
     text-align: center;
+  }
+  .sl-vue-tree.sl-vue-tree-root {
+    border: none !important;
+    background: none !important;
   }
   .main {
     flex: 1;
