@@ -1,7 +1,7 @@
 {
-  "name": "eclair-conversation-editor",
-  "version": "0.1.0",
-  "author": "",
+  "name": "EclairConversationEditor",
+  "version": "0.2.0",
+  "author": "wararyo",
   "description": "Editor for ue4 eclair conversation plugin",
   "license": null,
   "main": "./dist/electron/main.js",

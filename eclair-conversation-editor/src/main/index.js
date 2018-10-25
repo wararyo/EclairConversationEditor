@@ -142,6 +142,25 @@ app.on('ready', function() {
       label: 'View',
       submenu: [
         {
+          label: 'Collapse All',
+          accelerator: 'CmdOrCtrl+Shift+E',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("CollapseAll");
+          }
+        },
+        {
+          label: 'Expand All',
+          accelerator: 'CmdOrCtrl+E',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("ExpandAll");
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
           label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
           click: function(item, focusedWindow) {

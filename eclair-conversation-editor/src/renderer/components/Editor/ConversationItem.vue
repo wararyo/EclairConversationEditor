@@ -29,6 +29,7 @@
 
 <script>
   import CharacterInput from "./CharacterInput"
+  const {ipcRenderer} = require('electron')
 
 	export default {
     name: 'conversation-item',
@@ -44,6 +45,10 @@
       alert() {
           this.$dialog.alert('Everything looks fine!')
       }
+    },
+    mounted: function() {
+      ipcRenderer.on('ExpandAll', () => {this.collapsed = false;});
+      ipcRenderer.on('CollapseAll', () => {this.collapsed = true;});
     }
   }
 </script>

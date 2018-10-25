@@ -212,6 +212,8 @@
       });
       ipcRenderer.on('New', () => {if(this.path != "") this.save(); this.new();});
       ipcRenderer.on('Save', this.save);
+      ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
+      ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});
     }
   }
 </script>

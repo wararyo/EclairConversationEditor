@@ -25,7 +25,12 @@
     	MyTaginput
     },
     props: {//['value','placeholder','enabled'],
-        value: Object,placeholder: String,enabled: {type:Boolean,default:true}
+        value: Array,
+        placeholder: String,
+        enabled: {
+            type:Boolean,
+            default:true
+        }
     },
     data: function(){ return {
     		filteredCharacters: env.characters
