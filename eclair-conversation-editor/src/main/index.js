@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu } from 'electron'
+import openAboutWindow from 'about-window';
 
 /**
  * Set `__static` path to static files in production
@@ -49,6 +50,56 @@ app.on('ready', function() {
 
   // 【新規追加】メニューの中身、ショートカットを設定
   var template = [
+    {
+      label: 'Eclair Conversation Editor',
+      submenu: [
+        {
+          label: 'About Eclair Conversation Editor',
+          click: function(item, focusedWindow) {
+            openAboutWindow({ icon_path: '../../src/renderer/assets/Conversation-xlarge.png' });
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Preferences',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("PreferenceRequired");
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Quit',
+          accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Q' : 'Alt+F4',
+          role: 'quit'
+        }
+      ]
+    },
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'New',
+          accelerator: 'CmdOrCtrl+N',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("New");
+          }
+        },
+        {
+          label: 'Save',
+          accelerator: 'CmdOrCtrl+S',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("Save");
+          }
+        }
+      ]
+    },
     {
       label: 'Edit',
       submenu: [
@@ -117,7 +168,7 @@ app.on('ready', function() {
             if (process.platform == 'darwin')
               return 'Alt+Command+I';
             else
-              return 'Ctrl+Shift+I';
+              return 'F12';
           })(),
           click: function(item, focusedWindow) {
             if (focusedWindow)
@@ -148,7 +199,7 @@ app.on('ready', function() {
       submenu: [
         {
           label: 'Learn More',
-          click: function() { require('electron').shell.openExternal('http://electron.atom.io') }
+          click: function() { require('electron').shell.openExternal('https://github.com/wararyo/EclairConversationEditor') }
         },
       ]
     },

@@ -60,6 +60,7 @@
 
   var electron = require('electron');
   const {shell} = require('electron')
+  const {ipcRenderer} = require('electron')
   var remote = electron.remote;
   var fs = remote.require('fs');
 
@@ -93,9 +94,26 @@
       },
       save() {
         var str = JSON.stringify(this.conversation,null,2);
-        if(this.path == "") this.path = this.projectPath + "Untitled.eclairconversation";
-        fs.writeFileSync(this.path,str);
-        this.applyFiletree(this.projectPath);
+        if(this.path == "") {
+          //this.path = this.projectPath + "Untitled.eclairconversation";
+          var p = remote.dialog.showSaveDialog(null,{
+              title: "Select a EclairConversation File",
+              defaultPath: this.projectPath,
+              filters: [
+                {name: 'EclairConversation File', extensions: ['eclairconversation']},
+                {name: 'Json File', extensions: ['json']}
+              ]
+            });
+          if(p) this.path = p;
+        }
+        if(this.path != "") {
+          fs.writeFileSync(this.path,str);
+          this.applyFiletree(this.projectPath);
+        }
+      },
+      new() {
+        this.path = "";
+        this.conversation = env.default_conversation;
       },
       add(item) {
         var newItem = Object.assign({},item);
@@ -154,13 +172,25 @@
       //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
       if(!store.get('projectPath')) {
         //初回起動だったら設定を開く
-        console.log(this.$refs.preferenceButton);
         this.$refs.preferenceButton.isComponentModalActive = true;
       }
       else {
         this.projectPath = store.get('projectPath');
       }
       this.applyFiletree(this.projectPath);
+
+      //引数でファイル指定があったらそれを開く
+      if(remote.process.argv.length > 1) {
+        var p = remote.process.argv[1];
+        if(p.match(/\.[a-zA-Z]+$/)) this.load(p);
+      }
+
+      //各種メニュー項目
+      ipcRenderer.on('PreferenceRequired', () => {
+        this.$refs.preferenceButton.isComponentModalActive = true;
+      });
+      ipcRenderer.on('New', () => {this.save();this.new();});
+      ipcRenderer.on('Save', this.save);
     }
   }
 </script>
