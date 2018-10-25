@@ -2,7 +2,7 @@
 
 > Editor for ue4 eclair conversation plugin
 
-<img src="Images/1.png" width="480">
+<img src="Images/1.png" width="560">
 
 ## 初期設定
 
