@@ -125,7 +125,7 @@
       },
       nodeClick(event, node) {
         if(node.isLeaf) {
-          this.save();
+          if(this.path != "") this.save();
           this.load(path.resolve(this.projectPath, '../') + node.data.pathname);
         }
       },
@@ -189,7 +189,7 @@
       ipcRenderer.on('PreferenceRequired', () => {
         this.$refs.preferenceButton.isComponentModalActive = true;
       });
-      ipcRenderer.on('New', () => {this.save();this.new();});
+      ipcRenderer.on('New', () => {if(this.path != "") this.save(); this.new();});
       ipcRenderer.on('Save', this.save);
     }
   }
