@@ -138,7 +138,8 @@
     },
     computed: {
       name: function() {
-        return this.path == "" ? "Untitled" : this.path.match(".+/(.+?)\.[a-z]+([\?#;].*)?$")[1];
+        return this.path == "" ? "Untitled" :
+          this.path.replace(this.projectPath,'').replace(/\.[a-z]+$/gi,'');
       },
       content: { 
         get: function() {
@@ -152,7 +153,7 @@
     mounted: function() {
       //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
       if(!store.get('projectPath')) {
-        //設定を開く
+        //初回起動だったら設定を開く
         console.log(this.$refs.preferenceButton);
         this.$refs.preferenceButton.isComponentModalActive = true;
       }
