@@ -1,8 +1,25 @@
-# eclair-conversation-editor
+# Eclair Conversation Editor
 
 > Editor for ue4 eclair conversation plugin
 
-#### Build Setup
+<img src="images/1.png" width="480">
+
+## 初期設定
+
+### Project Folder
+EclairConversationファイルを管理するフォルダを指定してください。  
+
+末尾には`/`をつけてください。
+
+UE4プロジェクトに`ConversationProject`などといった名前のフォルダを作成しそこを指定すると良いでしょう。
+
+## 使い方
+編集して保存するだけです。
+`Ctrl+Shift+E`で全部折りたためます。
+
+ファイル操作周りは実装めんどいからファインダーからよろしく(左ペイン右クリックで`Reveal in Finder`が出るよ)
+
+## Build Setup
 
 ``` bash
 # install dependencies
