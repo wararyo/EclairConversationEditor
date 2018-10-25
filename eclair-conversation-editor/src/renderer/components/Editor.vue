@@ -25,26 +25,33 @@
       </header>
       <div class="content">
         <div class="content-meta">
-          <h3>メタデータ</h3>
-          <b-field label="概要">
-            <b-input v-model="conversation['description']"></b-input>
-          </b-field>
-          <b-field label="キャラクター">
-            <b-field grouped>
-              <character-input v-model="conversation['character-left']"></character-input>
-              <character-input v-model="conversation['character-right']"></character-input>
+          <div class="meta-header">
+            <button class="button" style="border: none; margin-right: 8px;" @click="metaCollapsed = !metaCollapsed"><b-icon
+          :icon="metaCollapsed ? 'menu-right' : 'menu-down'">
+            </b-icon></button>
+            <h3>メタデータ</h3>
+          </div>
+          <section v-if="!metaCollapsed">
+            <b-field label="概要">
+              <b-input v-model="conversation['description']"></b-input>
             </b-field>
-          </b-field>
-          <b-field label="会話送りタイプ">
-              <b-select placeholder="Select a type" v-model="conversation['type']">
-                  <option
-                      v-for="option in conversationTypes"
-                      :value="option.id"
-                      :key="option.id">
-                      {{ option.name }}
-                  </option>
-              </b-select>
-          </b-field>
+            <b-field label="キャラクター">
+              <b-field grouped>
+                <character-input v-model="conversation['character-left']"></character-input>
+                <character-input v-model="conversation['character-right']"></character-input>
+              </b-field>
+            </b-field>
+            <b-field label="会話送りタイプ">
+                <b-select placeholder="Select a type" v-model="conversation['type']">
+                    <option
+                        v-for="option in conversationTypes"
+                        :value="option.id"
+                        :key="option.id">
+                        {{ option.name }}
+                    </option>
+                </b-select>
+            </b-field>
+          </section>
         </div>
         <draggable v-model="content" :options="{animation:160,handle:'.conversation-item'}" @start="drag=true" @end="drag=false">
           <div v-for="item in content" :key="item.id" >
@@ -91,7 +98,8 @@
         conversation: env.default_conversation,
         projectPath: "",
         path: "",
-        isDarwin: process.platform === 'darwin'
+        isDarwin: process.platform === 'darwin',
+        metaCollapsed: false
       };
     },
     methods: {
@@ -275,6 +283,13 @@
     }
     > ul {
       margin: 0 0 16px 0;
+    }
+  }
+  .meta-header {
+    display: flex;
+    align-items: center;
+    h3 {
+      margin: 0 !important;
     }
   }
 </style>

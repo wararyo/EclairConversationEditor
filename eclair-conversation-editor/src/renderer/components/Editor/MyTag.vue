@@ -10,6 +10,7 @@
         </span>
         <a
             class="tag is-delete"
+            v-if="!disabled"
             role="button"
             :tabindex="tabstop ? 0 : false"
             :disabled="disabled"

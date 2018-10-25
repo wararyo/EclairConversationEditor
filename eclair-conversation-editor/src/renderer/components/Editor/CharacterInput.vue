@@ -6,7 +6,9 @@
             autocomplete
             :allow-new="false"
             field="name"
-            placeholder="Add a characters"
+            :placeholder="placeholder"
+            :disabled="!enabled"
+            :closable="enabled"
             @typing="getFilteredCharacters"
             v-on:input="$emit('input', value)">
         </my-taginput>
@@ -22,7 +24,9 @@
     components: {
     	MyTaginput
     },
-    props: ['value'],
+    props: {//['value','placeholder','enabled'],
+        value: Object,placeholder: String,enabled: {type:Boolean,default:true}
+    },
     data: function(){ return {
     		filteredCharacters: env.characters
     	};

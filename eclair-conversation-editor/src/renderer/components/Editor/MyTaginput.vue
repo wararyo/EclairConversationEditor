@@ -2,7 +2,7 @@
     <div class="taginput control" :class="rootClasses">
         <div
             class="taginput-container"
-            :class="[statusType, size, containerClasses]"
+            :class="[statusType, size, containerClasses, {'is-disabled':disabled}]"
             :disabled="disabled"
             @click="hasInput && focus($event)">
             <my-tag
@@ -23,7 +23,7 @@
 
             <b-autocomplete
                 ref="autocomplete"
-                v-if="hasInput"
+                v-if="hasInput && !disabled"
                 v-model="newTag"
                 v-bind="$attrs"
                 :data="data"
@@ -105,7 +105,10 @@
                 default: 'value'
             },
             autocomplete: Boolean,
-            disabled: Boolean,
+            disabled: {
+                type: Boolean,
+                default: false
+            },
             ellipsis: Boolean,
             closable: {
                 type: Boolean,
@@ -295,3 +298,12 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .taginput-container.is-disabled {
+        border: none !important;
+        box-shadow: none !important;
+        padding-left: 0 !important;
+        background-color: transparent !important;
+    }
+</style>
