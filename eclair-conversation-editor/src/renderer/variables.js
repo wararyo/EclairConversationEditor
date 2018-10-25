@@ -45,6 +45,22 @@ module.exports = {
         "name": "Brioche",
         "color": "#dd452a"
       }
+    ],
+
+  conversationTypes : 
+    [
+      {
+        "id": 0,
+        "name": "Automatic"
+      },
+      {
+        "id": 1,
+        "name": "Manual"
+      },
+      {
+        "id": 2,
+        "name": "Driven by Events"
+      }
     ]
 
 }

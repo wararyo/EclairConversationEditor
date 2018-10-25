@@ -35,6 +35,16 @@
               <character-input v-model="conversation['character-right']"></character-input>
             </b-field>
           </b-field>
+          <b-field label="会話送りタイプ">
+              <b-select placeholder="Select a type" v-model="conversation['type']">
+                  <option
+                      v-for="option in conversationTypes"
+                      :value="option.id"
+                      :key="option.id">
+                      {{ option.name }}
+                  </option>
+              </b-select>
+          </b-field>
         </div>
         <draggable v-model="content" :options="{animation:160,handle:'.conversation-item'}" @start="drag=true" @end="drag=false">
           <div v-for="item in content" :key="item.id" >
@@ -135,7 +145,7 @@
       applyFiletree(directory) {
         parent = path.resolve(directory, '../');
         this.$refs.filetree.nodes = [];
-        GetFileList.readTopDir(directory,
+        GetFileList.readSubDir(directory,
             (err) => {throw err},
             (itemPath) => {
               if(itemPath.endsWith('.eclairconversation')||itemPath.endsWith('.json')) 
@@ -166,6 +176,9 @@
         set: function(value) {
           this.conversation['content'] = value;
         }
+      },
+      conversationTypes: () => {
+        return env.conversationTypes;
       }
     },
     mounted: function() {
