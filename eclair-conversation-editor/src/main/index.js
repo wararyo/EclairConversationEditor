@@ -21,7 +21,10 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1000
+    width: 1000,
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
 
   mainWindow.loadURL(winURL)
@@ -56,7 +59,11 @@ app.on('ready', function() {
         {
           label: 'About Eclair Conversation Editor',
           click: function(item, focusedWindow) {
-            openAboutWindow({ icon_path: '../../src/renderer/assets/Conversation-xlarge.png' });
+            openAboutWindow({
+              icon_path: '../../dist/electron/static/Conversation-xlarge.png',
+              homepage: 'https://github.com/wararyo/EclairConversationEditor',
+              copyright: 'Copyright (c) 2019 wararyo'
+            });
           }
         },
         {
