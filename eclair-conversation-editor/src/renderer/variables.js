@@ -44,6 +44,16 @@ module.exports = {
         "id": 3,
         "name": "Brioche",
         "color": "#dd452a"
+      },
+      {
+        "id": 4,
+        "name": "Savoie",
+        "color": "#59b1d1"
+      },
+      {
+        "id": 100,
+        "name": "Archive",
+        "color": "#b73aff"
       }
     ],
 
