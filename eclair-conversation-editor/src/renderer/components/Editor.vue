@@ -107,6 +107,7 @@
         this.load('/Users/wararyo/Git/EclairConversationEditor/test.json');
       },
       load(path) {
+        console.log(path);
         this.path = path;
         this.conversation = JSON.parse(fs.readFileSync(path, 'utf8'));
       },
@@ -128,6 +129,17 @@
           fs.writeFileSync(this.path,str);
           this.applyFiletree(this.projectPath);
         }
+      },
+      open() {
+        var p = remote.dialog.showOpenDialog(null,{
+              title: "Open a EclairConversation File",
+              defaultPath: this.projectPath,
+              filters: [
+                {name: 'EclairConversation File', extensions: ['eclairconversation']},
+                {name: 'Json File', extensions: ['json']}
+              ]
+            });
+        if(p[0]) this.load(p[0]);
       },
       new() {
         this.path = "";
@@ -211,6 +223,7 @@
         this.$refs.preferenceButton.isComponentModalActive = true;
       });
       ipcRenderer.on('New', () => {if(this.path != "") this.save(); this.new();});
+      ipcRenderer.on('Open', this.open);
       ipcRenderer.on('Save', this.save);
       ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
       ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});

@@ -98,6 +98,14 @@ app.on('ready', function() {
           }
         },
         {
+          label: 'Open',
+          accelerator: 'CmdOrCtrl+O',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("Open");
+          }
+        },
+        {
           label: 'Save',
           accelerator: 'CmdOrCtrl+S',
           click: function(item, focusedWindow) {
