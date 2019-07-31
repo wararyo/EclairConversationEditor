@@ -51,7 +51,7 @@ module.exports = {
         "color": "#59b1d1"
       },
       {
-        "id": 100,
+        "id": 10,
         "name": "Archive",
         "color": "#b73aff"
       }
