@@ -28,32 +28,38 @@ module.exports = {
       {
         "id": 0,
         "name": "Eclair",
-        "color": "#F27936"
+        "color": "#F27936",
+        "abbreviation": "エ"
       },
       {
         "id": 1,
         "name": "Oreillette",
-        "color": "#2059b5"
+        "color": "#2059b5",
+        "abbreviation": "オ"
       },
       {
         "id": 2,
         "name": "Friand",
-        "color": "#37ddb7"
+        "color": "#37ddb7",
+        "abbreviation": "フ"
       },
       {
         "id": 3,
         "name": "Brioche",
-        "color": "#dd452a"
+        "color": "#dd452a",
+        "abbreviation": "ブ"
       },
       {
         "id": 4,
         "name": "Savoie",
-        "color": "#59b1d1"
+        "color": "#59b1d1",
+        "abbreviation": "サ"
       },
       {
         "id": 10,
         "name": "Archive",
-        "color": "#b73aff"
+        "color": "#b73aff",
+        "abbreviation": "ア"
       }
     ],
 

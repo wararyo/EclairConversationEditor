@@ -69,6 +69,7 @@
   import CharacterInput from "./Editor/CharacterInput"
   import GetFileList from "../utils/GetFileList"
   import PreferenceButton from "./Editor/PreferenceButton"
+  import copy from 'copy-to-clipboard'
 
   const util = require('util');
 
@@ -153,6 +154,15 @@
       remove(item){
         this.content.splice(this.content.indexOf(item),1);
       },
+      copyastext() {
+        let str = "";
+        str += this.conversation.description + "\n";
+        for(let item of this.conversation.content) {
+          item.character.forEach(c => {str += env.characters.find(x => x.id === c).abbreviation});
+          str += ": " + item.content.replace(/\n/g,"") + "\n";
+        }
+        copy(str);
+      },
       nodeClick(event, node) {
         if(node.isLeaf) {
           if(this.path != "") this.save();
@@ -225,6 +235,7 @@
       ipcRenderer.on('New', () => {if(this.path != "") this.save(); this.new();});
       ipcRenderer.on('Open', this.open);
       ipcRenderer.on('Save', this.save);
+      ipcRenderer.on('CopyAsText', this.copyastext);
       ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
       ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});
     }

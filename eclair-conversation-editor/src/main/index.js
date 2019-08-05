@@ -112,7 +112,18 @@ app.on('ready', function() {
             if (focusedWindow)
               focusedWindow.webContents.send("Save");
           }
-        }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Copy as Text',
+          accelerator: 'CmdOrCtrl+T',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("CopyAsText");
+          }
+        },
       ]
     },
     {
@@ -151,6 +162,9 @@ app.on('ready', function() {
           accelerator: 'CmdOrCtrl+A',
           role: 'selectall'
         },
+        /*{
+          type: 'separator'
+        },*/
       ]
     },
     {
