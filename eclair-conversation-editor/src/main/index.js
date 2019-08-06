@@ -124,6 +124,14 @@ app.on('ready', function() {
               focusedWindow.webContents.send("CopyAsText");
           }
         },
+        {
+          label: 'Copy as Text from Folder',
+          accelerator: 'CmdOrCtrl+Shift+T',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.send("CopyAsTextFromFolder");
+          }
+        },
       ]
     },
     {

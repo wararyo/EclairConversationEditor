@@ -154,14 +154,41 @@
       remove(item){
         this.content.splice(this.content.indexOf(item),1);
       },
-      copyastext() {
+      textize() {
         let str = "";
         str += this.conversation.description + "\n";
         for(let item of this.conversation.content) {
           item.character.forEach(c => {str += env.characters.find(x => x.id === c).abbreviation});
           str += ": " + item.content.replace(/\n/g,"") + "\n";
         }
-        copy(str);
+        return str;
+      },
+      copyAsText() {
+        copy(this.textize());
+      },
+      copyAsTextFromFolder() {
+        var p = remote.dialog.showOpenDialog(null,{
+          title: "Choose Folder",
+          defaultPath: this.projectPath,
+          properties: ['openDirectory']
+        })[0];
+        if(this.path != "") this.save();
+        fs.readdir(p, (err, dir) => {
+          if(err) {
+            console.log(err);
+            return;
+          }
+          let str = "";
+          for (let file of dir) {
+            const ext = path.extname(file);
+            if (ext === '.eclairconversation' || ext === '.json') {
+              this.load(path.resolve(path.join(p, file)));
+              str += this.textize() + "\n";
+            }
+          }
+          copy(str);
+          console.log("Copied.")
+        });
       },
       nodeClick(event, node) {
         if(node.isLeaf) {
@@ -235,7 +262,8 @@
       ipcRenderer.on('New', () => {if(this.path != "") this.save(); this.new();});
       ipcRenderer.on('Open', this.open);
       ipcRenderer.on('Save', this.save);
-      ipcRenderer.on('CopyAsText', this.copyastext);
+      ipcRenderer.on('CopyAsText', this.copyAsText);
+      ipcRenderer.on('CopyAsTextFromFolder', this.copyAsTextFromFolder);
       ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
       ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});
     }
