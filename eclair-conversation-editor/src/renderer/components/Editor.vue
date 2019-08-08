@@ -6,16 +6,19 @@
         <preference-button ref="preferenceButton" v-on:close="applyPreference"></preference-button>
       </div>
       <div class="file-brower-container">
-        <file-browser-tree 
-          id="file-tree"
-          ref="filetree"
-          @nodeClick="nodeClick">
+        <tree :data="fileTreeData" >
+          <span class="tree-text" slot-scope="{ node }">
+            <template v-if="!node.hasChildren()">
+              <i class="ion-android-star"></i>
+              {{ node.text }}
+            </template>
 
-          <template slot="context-menu">
-              <div @click="revealInFinder">Reveal in {{isDarwin ? 'Finder':'Explorer'}}</div>
-          </template>
-
-        </file-browser-tree>
+            <template v-else>
+              <i :class="[node.expanded() ? 'ion-android-folder-open' : 'ion-android-folder']"></i>
+              {{ node.text }}
+            </template>
+          </span>
+        </tree>
       </div>
     </div>
     <div class="main">
@@ -70,6 +73,7 @@
   import GetFileList from "../utils/GetFileList"
   import PreferenceButton from "./Editor/PreferenceButton"
   import copy from 'copy-to-clipboard'
+  import Tree from 'liquor-tree'
 
   const util = require('util');
 
@@ -93,14 +97,16 @@
       ConversationItem,
       CharacterInput,
       PreferenceButton,
-      draggable
+      draggable,
+      Tree
     },
     data: function(){ return {
         conversation: env.default_conversation,
         projectPath: "",
         path: "",
         isDarwin: process.platform === 'darwin',
-        metaCollapsed: false
+        metaCollapsed: false,
+        fileTreeData: []
       };
     },
     methods: {
@@ -128,7 +134,6 @@
         }
         if(this.path != "") {
           fs.writeFileSync(this.path,str);
-          this.applyFiletree(this.projectPath);
         }
       },
       open() {
@@ -199,16 +204,13 @@
       revealInFinder(a,b) {
         shell.showItemInFolder(this.projectPath);
       },
-      applyFiletree(directory) {
-        parent = path.resolve(directory, '../');
-        this.$refs.filetree.nodes = [];
-        GetFileList.readSubDir(directory,
-            (err) => {throw err},
-            (itemPath) => {
-              if(itemPath.endsWith('.eclairconversation')||itemPath.endsWith('.json')) 
-                this.$refs.filetree.addPathToTree(itemPath.replace(parent,''), '', false);
-            }
-          );
+      async applyFiletree(directory) {
+        GetFileList.generateFileTree(directory,null,(p) => {
+          return p.endsWith('.eclairconversation') || p.endsWith('.json');
+        },(o) => {
+          this.fileTreeData = o;
+          console.log(JSON.stringify(o));
+        });
       },
       applyPreference() {
         if(!store.get('projectPath')) {

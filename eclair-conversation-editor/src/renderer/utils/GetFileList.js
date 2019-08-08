@@ -120,3 +120,37 @@ exports.readSubDir = (folderPath, errorFunc, itemFunc, finishFunc) => {
   }
   readTopDir(folderPath);
 };
+
+//ファイル構造を元にObjectを生成
+//itemFuncでfalseを返すとそのitemはObjectに追加されません
+exports.generateFileTree = (folderPath, errorFunc, itemFunc, finishFunc, base = []) => {
+  fs.readdirSync(folderPath, function(err, items) {
+    if (err) {
+      if (errorFunc) {
+        errorFunc(err);
+      }
+    }
+    /*items = items.map((itemName) => {
+      return path.join(folderPath, itemName);
+    });*/
+    items.forEach((itemPath) => {
+      let fullPath = path.join(folderPath, itemPath);
+      //フォルダは無条件で追加する
+      if (fs.statSync(fullPath).isDirectory()) {
+        exports.generateFileTree(fullPath,undefined,undefined,(o) => {
+          base.push({text:itemPath, children:o});//再帰
+        });
+      }
+      //ファイルに関してはitemFuncがあり、trueが返されたなら追加する itemFuncがなくても追加する
+      else if (itemFunc !== void 0) {
+        if (itemFunc(fullPath)) {
+          base.push({text:itemPath});
+        }
+      }
+      else base.push({text:itemPath});
+    });
+    if (finishFunc) {
+      finishFunc(base);
+    }
+  });
+};
