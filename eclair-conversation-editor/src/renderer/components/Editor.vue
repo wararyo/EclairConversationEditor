@@ -6,7 +6,7 @@
         <preference-button ref="preferenceButton" v-on:close="applyPreference"></preference-button>
       </div>
       <div class="file-brower-container">
-        <tree :data="fileTreeData" >
+        <tree :options="treeOptions" >
           <span class="tree-text" slot-scope="{ node }">
             <template v-if="!node.hasChildren()">
               <i class="ion-android-star"></i>
@@ -70,12 +70,12 @@
   import ConversationItem from "./Editor/ConversationItem"
   import draggable from 'vuedraggable'
   import CharacterInput from "./Editor/CharacterInput"
-  import GetFileList from "../utils/GetFileList"
   import PreferenceButton from "./Editor/PreferenceButton"
   import copy from 'copy-to-clipboard'
   import Tree from 'liquor-tree'
 
   const util = require('util');
+  const GetFileList = require("../utils/GetFileList");
 
   var env = require('../variables');
   var uuid = require('uuid');
@@ -106,7 +106,17 @@
         path: "",
         isDarwin: process.platform === 'darwin',
         metaCollapsed: false,
-        fileTreeData: []
+        treeOptions: {
+          fetchData(node) {
+            return new Promise((resolve,reject) => resolve(node))
+            .then(n => [{ "text": "Introduction", "children": [
+              { "text": "Who Should Read This Book?" },
+              { "text": "How to Read This Book" },
+              { "text": "What’s in This Book?" },
+              { "text": "Have Fun!" }
+            ]}]);
+          }
+        }
       };
     },
     methods: {
@@ -204,12 +214,9 @@
       revealInFinder(a,b) {
         shell.showItemInFolder(this.projectPath);
       },
-      async applyFiletree(directory) {
-        GetFileList.generateFileTree(directory,null,(p) => {
+      getFileTree(directory) {
+        return GetFileList.generateFileTree(directory,(p) => {
           return p.endsWith('.eclairconversation') || p.endsWith('.json');
-        },(o) => {
-          this.fileTreeData = o;
-          console.log(JSON.stringify(o));
         });
       },
       applyPreference() {
@@ -220,7 +227,7 @@
         else {
           this.projectPath = store.get('projectPath');
         }
-        this.applyFiletree(this.projectPath);
+        //this.applyFiletree(this.projectPath);
       }
     },
     computed: {
@@ -249,7 +256,7 @@
       else {
         this.projectPath = store.get('projectPath');
       }
-      this.applyFiletree(this.projectPath);
+      //this.applyFiletree(this.projectPath);
 
       //引数でファイル指定があったらそれを開く
       if(remote.process.argv.length > 1) {
