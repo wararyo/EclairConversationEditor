@@ -254,7 +254,7 @@
         return env.conversationTypes;
       }
     },
-    created() {
+    mounted() {
       if(!store.get('projectPath')) {
         //初回起動だったら設定を開く
         this.$refs.preferenceButton.isComponentModalActive = true;
@@ -262,10 +262,6 @@
       else {
         this.projectPath = store.get('projectPath');
       }
-    },
-    mounted() {
-      //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
-      //this.applyFiletree(this.projectPath);
 
       //引数でファイル指定があったらそれを開く
       if(remote.process.argv.length > 1) {
