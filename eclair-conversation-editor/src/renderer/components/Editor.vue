@@ -83,8 +83,10 @@
   var electron = require('electron');
   const {shell} = require('electron')
   const {ipcRenderer} = require('electron')
-  var remote = electron.remote;
-  var fs = remote.require('fs');
+  const remote = electron.remote;
+  const Menu = remote.Menu;
+  const MenuItem = remote.MenuItem;
+  const fs = remote.require('fs');
 
   const path = require('path');
 
@@ -207,8 +209,8 @@
           console.log("Copied.")
         });
       },
-      revealInFinder(a,b) {
-        shell.showItemInFolder(this.projectPath);
+      revealInFinder(path) {
+        shell.showItemInFolder(path);
       },
       applyPreference() {
         if(!store.get('projectPath')) {
@@ -270,6 +272,17 @@
         var p = remote.process.argv[1];
         if(p.match(/\.[a-zA-Z]+$/)) this.load(p);
       }
+
+      //ツリービュー右クリック
+      var treePopup = new Menu();
+      treePopup.$vm = this;
+      treePopup.append(new MenuItem({ label: `Reveal in ${this.isDarwin ? 'Finder':'Explorer'}`, click: function(e) { treePopup.$vm.revealInFinder(treePopup.path); } }));
+
+      this.$refs.tree.$el.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        treePopup.path = e.path.find((i) => i.dataset.id !== void 0).dataset.id;
+        treePopup.popup(remote.getCurrentWindow());
+      }, false);
 
       //各種メニュー項目
       ipcRenderer.on('PreferenceRequired', () => {
