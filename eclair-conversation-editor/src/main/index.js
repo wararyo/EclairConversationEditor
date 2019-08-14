@@ -48,6 +48,12 @@ app.on('activate', () => {
   }
 })
 
+app.on('open-file', (event,path) => {
+  event.preventDefault();
+  if(mainWindow === void 0) process.openFile = path;
+  else mainWindow.webContents.send("Load",path);
+});
+
 /* Menu */
 app.on('ready', function() {
 

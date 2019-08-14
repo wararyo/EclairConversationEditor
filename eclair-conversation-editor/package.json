@@ -1,6 +1,6 @@
 {
   "name": "EclairConversationEditor",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": "wararyo",
   "description": "Editor for ue4 eclair conversation plugin",
   "homepage": "https://github.com/wararyo/EclairConversationEditor",
@@ -12,6 +12,7 @@
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
     "build:windows": "node .electron-vue/build.js && electron-builder --win --x64",
+    "build:mac": "node .electron-vue/build.js && electron-builder",
     "dev": "node .electron-vue/dev-runner.js",
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
@@ -43,7 +44,16 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "category": "public.app-category.developer-tools",
+      "extendInfo": {
+        "CFBundleDocumentTypes":[
+          {
+            "CFBundleTypeExtensions": ["eclairconversation", "json"],
+            "CFBundleTypeIconFile": "Eclair Conversation Editor.icns"
+          }
+        ]
+      }
     },
     "win": {
       "icon": "build/icons/icon.ico",

@@ -128,7 +128,7 @@
         this.load('/Users/wararyo/Git/EclairConversationEditor/test.json');
       },
       load(path) {
-        console.log(path);
+        if(this.path != "" && this.hasChange) this.save();
         this.path = path;
         this.conversation = JSON.parse(fs.readFileSync(path, 'utf8'));
       },
@@ -191,7 +191,6 @@
           defaultPath: this.projectPath,
           properties: ['openDirectory']
         })[0];
-        if(this.path != "" && this.hasChange) this.save();
         fs.readdir(p, (err, dir) => {
           if(err) {
             console.log(err);
@@ -226,7 +225,6 @@
     watch: {
       selectedFileInTree(node) {
         if(node !== null) if(!node.hasChildren()) {
-          if(this.path != "" && this.hasChange) this.save();
           this.load(node.id);
         }
       },
@@ -269,6 +267,11 @@
         if(p.match(/\.[a-zA-Z]+$/)) this.load(p);
       }
 
+      //Macでファイル指定があったらそれを開く
+      if(remote.process.openFile !== void 0) {
+        if(remote.process.openFile.match(/\.[a-zA-Z]+$/)) this.load(remote.process.openFile);
+      }
+
       //ツリービュー右クリック
       var treePopup = new Menu();
       treePopup.$vm = this;
@@ -285,6 +288,7 @@
         this.$refs.preferenceButton.isComponentModalActive = true;
       });
       ipcRenderer.on('New', () => {if(this.path != "" && this.hasChange) this.save(); this.new();});
+      ipcRenderer.on('Load',(event,path) => this.load(path));
       ipcRenderer.on('Open', this.open);
       ipcRenderer.on('Save', this.save);
       ipcRenderer.on('CopyAsText', this.copyAsText);
