@@ -6,7 +6,7 @@
         <preference-button ref="preferenceButton" v-on:close="applyPreference"></preference-button>
       </div>
       <div class="file-brower-container">
-        <tree :options="treeOptions" v-model="selectedFileInTree">
+        <tree ref="tree" :options="treeOptions" v-model="selectedFileInTree">
           <span class="tree-text" slot-scope="{ node }">
             <template v-if="node.hasChildren()">
               <i :class="[node.expanded() ? 'mdi mdi-folder-open mdi-16px' : 'mdi mdi-folder mdi-16px']"></i>
@@ -109,9 +109,12 @@
         treeOptions: {
           multiple: false,
           fetchData(node) {
-            return GetFileList.generateFileTree(node.id === 'root'?"/Users/wararyo/Git/Eclair3/ConversationProject/":node.id,(p) => {
-              return p.endsWith('.eclairconversation') || p.endsWith('.json');
-            });
+            if(store.get('projectPath') !== void 0) {
+              return GetFileList.generateFileTree(node.id === 'root'?store.get('projectPath'):node.id,(p) => {
+                return p.endsWith('.eclairconversation') || p.endsWith('.json');
+              });
+            }
+            else return Promise.reject();
           }
         },
         selectedFileInTree: {},
@@ -207,11 +210,6 @@
       revealInFinder(a,b) {
         shell.showItemInFolder(this.projectPath);
       },
-      getFileTree(directory) {
-        return GetFileList.generateFileTree(directory === 'root'?this.projectPath:directory,(p) => {
-          return p.endsWith('.eclairconversation') || p.endsWith('.json');
-        });
-      },
       applyPreference() {
         if(!store.get('projectPath')) {
           //設定を開く
@@ -220,12 +218,12 @@
         else {
           this.projectPath = store.get('projectPath');
         }
-        //this.applyFiletree(this.projectPath);
+        this.$refs.tree.fetchInitData().then(data => this.$refs.tree.setModel(data));
       }
     },
     watch: {
       selectedFileInTree(node) {
-        if(!node.hasChildren()) {
+        if(node !== null) if(!node.hasChildren()) {
           if(this.path != "" && this.hasChange) this.save();
           this.load(node.id);
         }
@@ -322,6 +320,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    overflow: hidden;
   }
 	header {
     height: 48px;
@@ -369,6 +368,9 @@
     font-size: 0.8rem;
     > .tree-root {
       padding: 0;
+    }
+    i {
+      margin: 0 4px;
     }
   }
   .tree-arrow {
