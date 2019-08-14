@@ -51,7 +51,7 @@ app.on('activate', () => {
 /* Menu */
 app.on('ready', function() {
 
-  // 【新規追加】メニューの中身、ショートカットを設定
+  //メニューの中身、ショートカットを設定
   var template = [
     {
       label: 'Eclair Conversation Editor',
@@ -261,7 +261,7 @@ app.on('ready', function() {
     },
   ];
 
-  // 【新規追加】メニュー機能を追加
+  //メニューを追加
   var menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 });

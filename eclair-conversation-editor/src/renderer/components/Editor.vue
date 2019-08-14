@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" id="wrapper">
     <div class="sidebar">
       <div class="sidebar-header">
         <h1 class="sidebar-icon"><img src="~@/assets/icon-white.svg" alt="Eclair Conversation Editor"></h1>
@@ -295,6 +295,22 @@
       ipcRenderer.on('CopyAsTextFromFolder', this.copyAsTextFromFolder);
       ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
       ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});
+
+      //ドラッグ&ドロップ
+      var dropArea = document.getElementById('wrapper');
+      dropArea.$vm = this;
+      dropArea.ondragover = function () {
+        return false;
+      };
+      dropArea.ondragleave = dropArea.ondragend = function () {
+        return false;
+      };
+      dropArea.ondrop = function (e) {
+        e.preventDefault();
+        var file = e.dataTransfer.files[0];
+        dropArea.$vm.load(file.path);
+        return false;
+      };
     }
   }
 </script>
