@@ -6,15 +6,15 @@
         <preference-button ref="preferenceButton" v-on:close="applyPreference"></preference-button>
       </div>
       <div class="file-brower-container">
-        <tree :options="treeOptions" >
+        <tree :options="treeOptions" v-model="selectedFileInTree">
           <span class="tree-text" slot-scope="{ node }">
-            <template v-if="!node.hasChildren()">
-              <i class="ion-android-star"></i>
+            <template v-if="node.hasChildren()">
+              <i :class="[node.expanded() ? 'mdi mdi-folder-open mdi-16px' : 'mdi mdi-folder mdi-16px']"></i>
               {{ node.text }}
             </template>
 
             <template v-else>
-              <i :class="[node.expanded() ? 'ion-android-folder-open' : 'ion-android-folder']"></i>
+              <i class="mdi mdi-comment mdi-16px"></i>
               {{ node.text }}
             </template>
           </span>
@@ -107,16 +107,15 @@
         isDarwin: process.platform === 'darwin',
         metaCollapsed: false,
         treeOptions: {
+          multiple: false,
           fetchData(node) {
-            return new Promise((resolve,reject) => resolve(node))
-            .then(n => [{ "text": "Introduction", "children": [
-              { "text": "Who Should Read This Book?" },
-              { "text": "How to Read This Book" },
-              { "text": "What’s in This Book?" },
-              { "text": "Have Fun!" }
-            ]}]);
+            return GetFileList.generateFileTree(node.id === 'root'?"/Users/wararyo/Git/Eclair3/ConversationProject/":node.id,(p) => {
+              return p.endsWith('.eclairconversation') || p.endsWith('.json');
+            });
           }
-        }
+        },
+        selectedFileInTree: {},
+        hasChange: false
       };
     },
     methods: {
@@ -187,7 +186,7 @@
           defaultPath: this.projectPath,
           properties: ['openDirectory']
         })[0];
-        if(this.path != "") this.save();
+        if(this.path != "" && this.hasChange) this.save();
         fs.readdir(p, (err, dir) => {
           if(err) {
             console.log(err);
@@ -205,17 +204,11 @@
           console.log("Copied.")
         });
       },
-      nodeClick(event, node) {
-        if(node.isLeaf) {
-          if(this.path != "") this.save();
-          this.load(path.resolve(this.projectPath, '../') + node.data.pathname);
-        }
-      },
       revealInFinder(a,b) {
         shell.showItemInFolder(this.projectPath);
       },
       getFileTree(directory) {
-        return GetFileList.generateFileTree(directory,(p) => {
+        return GetFileList.generateFileTree(directory === 'root'?this.projectPath:directory,(p) => {
           return p.endsWith('.eclairconversation') || p.endsWith('.json');
         });
       },
@@ -228,6 +221,20 @@
           this.projectPath = store.get('projectPath');
         }
         //this.applyFiletree(this.projectPath);
+      }
+    },
+    watch: {
+      selectedFileInTree(node) {
+        if(!node.hasChildren()) {
+          if(this.path != "" && this.hasChange) this.save();
+          this.load(node.id);
+        }
+      },
+      conversation: {
+        handler() {
+          this.hasChange = true;
+        },
+        deep: true
       }
     },
     computed: {
@@ -247,8 +254,7 @@
         return env.conversationTypes;
       }
     },
-    mounted: function() {
-      //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
+    created() {
       if(!store.get('projectPath')) {
         //初回起動だったら設定を開く
         this.$refs.preferenceButton.isComponentModalActive = true;
@@ -256,6 +262,9 @@
       else {
         this.projectPath = store.get('projectPath');
       }
+    },
+    mounted() {
+      //this.projectPath = '/Users/wararyo/Git/EclairConversationEditor/'
       //this.applyFiletree(this.projectPath);
 
       //引数でファイル指定があったらそれを開く
@@ -268,7 +277,7 @@
       ipcRenderer.on('PreferenceRequired', () => {
         this.$refs.preferenceButton.isComponentModalActive = true;
       });
-      ipcRenderer.on('New', () => {if(this.path != "") this.save(); this.new();});
+      ipcRenderer.on('New', () => {if(this.path != "" && this.hasChange) this.save(); this.new();});
       ipcRenderer.on('Open', this.open);
       ipcRenderer.on('Save', this.save);
       ipcRenderer.on('CopyAsText', this.copyAsText);
@@ -305,11 +314,7 @@
   }
   .file-brower-container {
     flex:1;
-    overflow: scroll;
-  }
-  .sl-vue-tree.sl-vue-tree-root {
-    border: none !important;
-    background: none !important;
+    overflow: hidden auto;
   }
   .main {
     flex: 1;
@@ -354,5 +359,40 @@
     h3 {
       margin: 0 !important;
     }
+  }
+</style>
+
+<style lang="scss">
+  @import "~styles/color";
+  .tree {
+    height: 100%;
+    font-size: 0.8rem;
+    > .tree-root {
+      padding: 0;
+    }
+  }
+  .tree-arrow {
+    display: none;
+  }
+  .tree-content {
+  }
+  .tree-anchor {
+    color: #F0F0F0;  
+    line-height: 16px;
+    overflow: hidden;
+  }
+  .tree-node:not(.selected) > .tree-content:hover {
+    background: rgba(white,.3);
+  }
+  .tree-node.selected > .tree-content {
+    background: rgba(white,.3);
+  }
+  .tree-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mdi-comment {
+    color:lighten($color-eclair,10%);
   }
 </style>
