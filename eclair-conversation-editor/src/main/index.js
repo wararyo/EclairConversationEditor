@@ -54,8 +54,9 @@ app.on('open-file', (event,path) => {
   else mainWindow.webContents.send("Load",path);
 });
 
-/* Menu */
 app.on('ready', function() {
+
+  process.currentVersion = app.getVersion();
 
   //メニューの中身、ショートカットを設定
   var template = [

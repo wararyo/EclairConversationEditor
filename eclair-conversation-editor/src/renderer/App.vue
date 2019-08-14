@@ -9,6 +9,7 @@
 
 <script>
 import UpdateModal from './components/UpdateModal'
+
 export default {
   name: 'eclair-conversation-editor',
   components: {
@@ -22,7 +23,7 @@ export default {
   mounted() {
     //最新バージョンをチェック
     if (process.env.NODE_ENV === 'production') {
-      this.currentVersion = process.env.npm_package_version;
+      this.currentVersion = require('electron').remote.process.currentVersion;
       fetch("https://api.github.com/repos/wararyo/eclairconversationeditor/releases/latest")
       .then((response) => response.json())
       .then((o) => {
