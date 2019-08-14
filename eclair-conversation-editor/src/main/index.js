@@ -14,6 +14,22 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
+// 二重起動防止
+
+var isFirstInstance = app.requestSingleInstanceLock()
+if(!isFirstInstance) app.quit();
+app.on('second-instance', (event, argv, cwd) => {
+  if (mainWindow === null) return;
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+  mainWindow.focus();
+  if(argv.length > 1) {
+    let p = argv[1];
+    if(p.match(/\.[a-zA-Z]+$/)) mainWindow.webContents.send("Load",p);
+  }
+});
+
 function createWindow () {
   /**
    * Initial window options
