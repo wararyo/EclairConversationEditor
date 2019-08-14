@@ -218,7 +218,7 @@
         else {
           this.projectPath = store.get('projectPath');
         }
-        this.$refs.tree.fetchInitData().then(data => this.$refs.tree.setModel(data));
+        this.$refs.tree.tree.fetchInitData().then(data => this.$refs.tree.tree.setModel(data));
       }
     },
     watch: {
