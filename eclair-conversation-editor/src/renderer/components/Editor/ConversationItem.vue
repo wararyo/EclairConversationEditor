@@ -44,11 +44,21 @@
     methods: {
       alert() {
           this.$dialog.alert('Everything looks fine!')
+      },
+      expandAll() {
+        this.collapsed = false;
+      },
+      collapseAll() {
+        this.collapsed = true;
       }
     },
     mounted: function() {
-      ipcRenderer.on('ExpandAll', () => {this.collapsed = false;});
-      ipcRenderer.on('CollapseAll', () => {this.collapsed = true;});
+      ipcRenderer.on('ExpandAll', this.expandAll);
+      ipcRenderer.on('CollapseAll', this.collapseAll);
+    },
+    beforeDestroy: function() {
+      ipcRenderer.removeListener('ExpandAll', this.expandAll);
+      ipcRenderer.removeListener('CollapseAll', this.collapseAll);
     }
   }
 </script>
