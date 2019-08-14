@@ -30,6 +30,8 @@
 <script>
   import CharacterInput from "./CharacterInput"
   const {ipcRenderer} = require('electron')
+  const Store = require('electron-store');
+  const store = new Store();
 
 	export default {
     name: 'conversation-item',
@@ -38,7 +40,7 @@
     },
     props: ['item','removable'],
     data: function(){ return {
-        collapsed: false
+        collapsed: !store.get('loadsWithCollapsed') ? false : store.get('loadsWithCollapsed')
       }
     },
     methods: {

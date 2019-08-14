@@ -30,6 +30,7 @@
                                 required>
                             </b-input>
                         </b-field>
+                        <b-checkbox v-model="loadsWithCollapsed">Load conversation with collapsed view</b-checkbox>
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -39,13 +40,15 @@
             </form>
         `,
         data: function(){ return {
-                projectPath: !store.get('projectPath') ? '' : store.get('projectPath')
+                projectPath: !store.get('projectPath') ? '' : store.get('projectPath'),
+                loadsWithCollapsed: !store.get('loadsWithCollapsed') ? false : store.get('loadsWithCollapsed')
             }
         },
         methods: {
             save() {
                 console.log(this.projectPath);
                 store.set('projectPath',this.projectPath);
+                store.set('loadsWithCollapsed', this.loadsWithCollapsed);
             }
         }
     }
@@ -58,7 +61,8 @@
             return {
                 isComponentModalActive: false,
                 formProps: {
-                    projectPath: store.get('projectPath')
+                    projectPath: store.get('projectPath'),
+                    loadsWithCollapsed: store.get('loadsWithCollapsed')
                 }
             }
         }
