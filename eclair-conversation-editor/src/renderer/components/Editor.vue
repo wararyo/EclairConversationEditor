@@ -349,7 +349,6 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    overflow: hidden;
   }
 	header {
     height: 48px;
@@ -372,7 +371,7 @@
     max-width: 800px;
     flex: 1;
     margin: 0 auto;
-    overflow:scroll;
+    overflow: hidden scroll;
     .content-meta {
       padding: 16px;
       border-bottom: 1px solid $light-gray;
@@ -395,6 +394,9 @@
   .tree {
     height: 100%;
     font-size: 0.8rem;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     > .tree-root {
       padding: 0;
     }
@@ -404,8 +406,6 @@
   }
   .tree-arrow {
     display: none;
-  }
-  .tree-content {
   }
   .tree-anchor {
     color: #F0F0F0;  

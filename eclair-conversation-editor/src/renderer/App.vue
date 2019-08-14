@@ -11,4 +11,10 @@
 </script>
 
 <style lang="scss">
+body {
+  overflow: hidden;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 </style>

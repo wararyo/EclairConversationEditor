@@ -1,13 +1,13 @@
 {
   "name": "EclairConversationEditor",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "author": "wararyo",
   "description": "Editor for ue4 eclair conversation plugin",
   "homepage": "https://github.com/wararyo/EclairConversationEditor",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "build": "node .electron-vue/build.js && electron-builder",
+    "build": "node .electron-vue/build.js && electron-builder && electron-builder --win --x64",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
