@@ -20,14 +20,11 @@ var isFirstInstance = app.requestSingleInstanceLock()
 if(!isFirstInstance) app.quit();
 app.on('second-instance', (event, argv, cwd) => {
   if (mainWindow === null) return;
-  if (mainWindow.isMinimized()) {
-    mainWindow.restore();
-  }
+  if (mainWindow.isMinimized()) mainWindow.restore();
   mainWindow.focus();
-  if(argv.length > 1) {
-    let p = argv[1];
-    if(p.match(/\.[a-zA-Z]+$/)) mainWindow.webContents.send("Load",p);
-  }
+  argv.forEach((item) => {
+    if(item.match(/\.(eclairconversation|json)$/)) mainWindow.webContents.send("Load",item);
+  });
 });
 
 function createWindow () {
