@@ -24,6 +24,7 @@
     <div class="main">
       <header>
         <h2>{{name}}</h2>
+        <button @click="preview">Preview</button>
         <button @click="save">Save</button>
       </header>
       <div class="content">
@@ -220,6 +221,9 @@
           this.projectPath = store.get('projectPath');
         }
         this.$refs.tree.tree.fetchInitData().then(data => this.$refs.tree.tree.setModel(data));
+      },
+      preview() {
+        ipcRenderer.send("Preview",3);
       }
     },
     watch: {
@@ -295,6 +299,7 @@
       ipcRenderer.on('CopyAsTextFromFolder', this.copyAsTextFromFolder);
       ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
       ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});
+      ipcRenderer.on('Preview', this.preview);
 
       //ドラッグ&ドロップ
       var dropArea = document.getElementById('wrapper');
