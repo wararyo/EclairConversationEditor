@@ -223,7 +223,7 @@
         this.$refs.tree.tree.fetchInitData().then(data => this.$refs.tree.tree.setModel(data));
       },
       preview() {
-        ipcRenderer.send("Preview",3);
+        ipcRenderer.send("Preview",this.conversation,3);
       }
     },
     watch: {

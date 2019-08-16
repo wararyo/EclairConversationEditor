@@ -88,9 +88,12 @@ app.on('open-file', (event,path) => {
   else mainWindow.webContents.send("Load",path);
 });
 
-ipcMain.on('Preview', (event,index) => {
-  if(!viewerWindow) createViewerWindow();
-  viewerWindow.webContents.send("Play", 3);
+ipcMain.on('Preview', (event,conversation,index) => {
+  if(!viewerWindow) {
+    createViewerWindow();
+    ipcMain.once('viewer-ready', () => viewerWindow.webContents.send("Play", conversation, 3));
+  }
+  else viewerWindow.webContents.send("Play", conversation, 3);
 });
 
 app.on('ready', function() {
