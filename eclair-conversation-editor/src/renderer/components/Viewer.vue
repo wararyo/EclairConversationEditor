@@ -1,6 +1,7 @@
 <template>
     <div class="viewer">
         {{currentItem.content}}
+        <div class="progress-bar" :style="`transform:translateX(calc(-100% + ${progress}%))`"></div>
     </div>
 </template>
 
@@ -8,6 +9,15 @@
 .viewer {
     white-space: pre;
     text-align: center;
+}
+.progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 3px;
+    background-color: orangered;
 }
 </style>
 
@@ -21,7 +31,8 @@ export default {
         conversation: {},
         currentItemIndex: 0,
         isPlaying: false,
-        lastTime: Date.now()
+        lastTime: Date.now(),
+        progress: 0
     }},
     computed: {
         currentItem() {
@@ -43,6 +54,7 @@ export default {
             if(conversation) {
                 this.currentItemIndex = conversation.content.findIndex((i) => i.id === id);
                 if(this.currentItemIndex === -1) this.currentItemIndex = 0;
+                this.isPlaying = false;
                 if(conversation.type !== 1) this.isPlaying = true;
             }
         });
@@ -52,7 +64,7 @@ export default {
     methods: {
         tick() {
             let time = Date.now() - this.lastTime;
-            console.log(time);
+            if(this.currentItem) this.progress = time / this.currentItem.duration / 10;
             if(time > this.currentItem.duration * 1000) {
                 if(this.currentItemIndex === this.conversation.content.length - 1) this.isPlaying = false;
                 else this.currentItemIndex++;
