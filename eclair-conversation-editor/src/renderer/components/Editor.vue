@@ -24,6 +24,7 @@
     <div class="main">
       <header>
         <h2>{{name}}</h2>
+        <button @click="preview">Preview</button>
         <button @click="save">Save</button>
       </header>
       <div class="content">
@@ -57,7 +58,7 @@
           </section>
         </div>
         <draggable v-model="content" :options="{animation:160,handle:'.conversation-item'}" @start="drag=true" @end="drag=false">
-          <div v-for="item in content" :key="item.id" >
+          <div v-for="item in content" :key="item.id" @click="onItemSelected(item.id)" >
             <conversation-item :removable="content.length != 1" :item="item" v-on:add="add($event)" v-on:remove="remove($event)"></conversation-item>
           </div>
         </draggable>
@@ -120,7 +121,8 @@
           }
         },
         selectedFileInTree: {},
-        hasChange: false
+        hasChange: false,
+        selectedItemId: 0
       };
     },
     methods: {
@@ -220,6 +222,12 @@
           this.projectPath = store.get('projectPath');
         }
         this.$refs.tree.tree.fetchInitData().then(data => this.$refs.tree.tree.setModel(data));
+      },
+      preview() {
+        ipcRenderer.send("Preview",this.conversation,this.selectedItemId);
+      },
+      onItemSelected(id) {
+        this.selectedItemId = id;
       }
     },
     watch: {
@@ -295,6 +303,7 @@
       ipcRenderer.on('CopyAsTextFromFolder', this.copyAsTextFromFolder);
       ipcRenderer.on('ExpandAll', () => {this.metaCollapsed = false;});
       ipcRenderer.on('CollapseAll', () => {this.metaCollapsed = true;});
+      ipcRenderer.on('Preview', this.preview);
 
       //ドラッグ&ドロップ
       var dropArea = document.getElementById('wrapper');
@@ -308,7 +317,7 @@
       dropArea.ondrop = function (e) {
         e.preventDefault();
         var file = e.dataTransfer.files[0];
-        dropArea.$vm.load(file.path);
+        if(file) dropArea.$vm.load(file.path);
         return false;
       };
     }

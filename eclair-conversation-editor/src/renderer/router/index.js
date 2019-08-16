@@ -11,6 +11,11 @@ export default new Router({
       component: require('@/components/Editor').default
     },
     {
+      path: '/viewer',
+      name: 'viewer',
+      component: require('@/components/Viewer').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

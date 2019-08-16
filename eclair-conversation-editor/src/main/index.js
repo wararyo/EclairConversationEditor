@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import openAboutWindow from 'about-window';
 
 /**
@@ -32,7 +32,7 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 560,
+    height: 640,
     useContentSize: true,
     width: 680,
     webPreferences: {
@@ -45,6 +45,27 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+}
+
+var viewerWindow;
+const viewerWinURL = process.env.NODE_ENV === 'development'
+? `http://localhost:9080/#/viewer/`
+: `file://${__dirname}/index.html#viewer`
+
+function createViewerWindow() {
+  viewerWindow = new BrowserWindow({
+    height: 360,
+    useContentSize: true,
+    width: 640,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  viewerWindow.loadURL(viewerWinURL)
+  viewerWindow.setTitle("Preview");
+  viewerWindow.on('closed', () => {
+    viewerWindow = null
+  });
 }
 
 app.on('ready', createWindow)
@@ -65,6 +86,14 @@ app.on('open-file', (event,path) => {
   event.preventDefault();
   if(mainWindow === void 0) process.openFile = path;
   else mainWindow.webContents.send("Load",path);
+});
+
+ipcMain.on('Preview', (event,conversation,id) => {
+  if(!viewerWindow) {
+    createViewerWindow();
+    ipcMain.once('viewer-ready', () => viewerWindow.webContents.send("Play", conversation, id));
+  }
+  else viewerWindow.webContents.send("Play", conversation, id);
 });
 
 app.on('ready', function() {
@@ -212,6 +241,16 @@ app.on('ready', function() {
           click: function(item, focusedWindow) {
             if (focusedWindow)
               focusedWindow.webContents.send("ExpandAll");
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Start Preview',
+          accelerator: 'F8',
+          click: function(item, focusedWindow) {
+            if(mainWindow) mainWindow.webContents.send("Preview");
           }
         },
         {
