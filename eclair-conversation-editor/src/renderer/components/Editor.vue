@@ -58,7 +58,7 @@
           </section>
         </div>
         <draggable v-model="content" :options="{animation:160,handle:'.conversation-item'}" @start="drag=true" @end="drag=false">
-          <div v-for="item in content" :key="item.id" >
+          <div v-for="item in content" :key="item.id" @click="onItemSelected(item.id)" >
             <conversation-item :removable="content.length != 1" :item="item" v-on:add="add($event)" v-on:remove="remove($event)"></conversation-item>
           </div>
         </draggable>
@@ -121,7 +121,8 @@
           }
         },
         selectedFileInTree: {},
-        hasChange: false
+        hasChange: false,
+        selectedItemId: 0
       };
     },
     methods: {
@@ -223,7 +224,10 @@
         this.$refs.tree.tree.fetchInitData().then(data => this.$refs.tree.tree.setModel(data));
       },
       preview() {
-        ipcRenderer.send("Preview",this.conversation,3);
+        ipcRenderer.send("Preview",this.conversation,this.selectedItemId);
+      },
+      onItemSelected(id) {
+        this.selectedItemId = id;
       }
     },
     watch: {
@@ -313,7 +317,7 @@
       dropArea.ondrop = function (e) {
         e.preventDefault();
         var file = e.dataTransfer.files[0];
-        dropArea.$vm.load(file.path);
+        if(file) dropArea.$vm.load(file.path);
         return false;
       };
     }

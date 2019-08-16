@@ -88,12 +88,12 @@ app.on('open-file', (event,path) => {
   else mainWindow.webContents.send("Load",path);
 });
 
-ipcMain.on('Preview', (event,conversation,index) => {
+ipcMain.on('Preview', (event,conversation,id) => {
   if(!viewerWindow) {
     createViewerWindow();
-    ipcMain.once('viewer-ready', () => viewerWindow.webContents.send("Play", conversation, 3));
+    ipcMain.once('viewer-ready', () => viewerWindow.webContents.send("Play", conversation, id));
   }
-  else viewerWindow.webContents.send("Play", conversation, 3);
+  else viewerWindow.webContents.send("Play", conversation, id);
 });
 
 app.on('ready', function() {
